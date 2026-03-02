@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Pro Trainer | Feedback Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .neon-gold { border: 3px solid #fbbf24; box-shadow: 0 0 25px rgba(251, 191, 36, 0.4); }
+        .card { transition: all 0.3s ease; animation: cardPop 0.4s ease-out; width: 112px; height: 160px; }
+        @keyframes cardPop { from { opacity: 0; transform: scale(0.5) translateY(40px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .hidden-section { display: none; }
+        .timer-bar { height: 6px; background: #fbbf24; width: 0%; transition: width 3s linear; }
+        .correct-flash { animation: flashGreen 0.5s; }
+        .incorrect-flash { animation: flashRed 0.5s; }
+        @keyframes flashGreen { 0% { background: transparent; } 50% { background: rgba(34, 197, 94, 0.2); } 100% { background: transparent; } }
+        @keyframes flashRed { 0% { background: transparent; } 50% { background: rgba(225, 29, 72, 0.2); } 100% { background: transparent; } }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+    <nav class="glass-panel sticky top-0 z-50 px-8 py-4 flex justify-between items-center border-b border-yellow-900/20">
+        <h1 class="text-xl font-black tracking-tighter text-yellow-500 uppercase">Whitejack <span class="text-white">Pro</span></h1>
+        <div class="flex gap-8 text-xs font-bold uppercase tracking-widest text-slate-400">
+            <button onclick="showPage('play')" class="hover:text-yellow-400">Training</button>
+            <button onclick="showPage('stats')" class="hover:text-yellow-400">Insights & Data</button>
+            <button onclick="showPage('chart')" class="hover:text-yellow-400">Reference</button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <section id="page-play" class="flex flex-col items-center">
+            <div id="table-surface" class="glass-panel w-full max-w-4xl rounded-[3rem] p-10 md:p-16 border-t-4 border-yellow-600 relative overflow-hidden shadow-2xl transition-colors duration-500">
+                
+                <div class="text-center mb-16">
+                    <p class="text-[10px] font-black text-yellow-500/50 tracking-widest uppercase mb-6">Dealer Position (<span id="dealer-score">?</span>)</p>
+                    <div id="dealer-cards" class="flex justify-center gap-6 min-h-[160px]"></div>
+                </div>
+
+                <div class="text-center mb-12">
+                    <div id="player-cards" class="flex justify-center gap-6 mb-8 min-h-[160px] flex-wrap"></div>
+                    <p class="text-[10px] font-black text-yellow-500/50 tracking-widest uppercase mb-4">Your Tactical Hand (<span id="player-score">0</span>)</p>
+                    
+                    <div id="feedback-container" class="bg-slate-900/50 rounded-2xl py-4 px-8 inline-block min-w-[300px] border border-white/5">
+                        <div id="status-label" class="text-xs font-black tracking-[0.3em] uppercase mb-1 text-slate-500">Awaiting Move</div>
+                        <div id="feedback-text" class="text-2xl font-black italic text-slate-300">New Round Dealt</div>
+                    </div>
+
+                    <div class="w-full bg-slate-800 rounded-full mt-8 h-1.5 overflow-hidden">
+                        <div id="timer-bar" class="timer-bar"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <button onclick="handleUserMove('H')" class="py-5 rounded-2xl bg-blue-600 hover:bg-blue-500 font-black text-lg shadow-xl transition-all active:scale-95">HIT</button>
+                    <button onclick="handleUserMove('S')" class="py-5 rounded-2xl bg-rose-600 hover:bg-rose-500 font-black text-lg shadow-xl transition-all active:scale-95">STAND</button>
+                    <button onclick="handleUserMove('D')" class="py-5 rounded-2xl bg-amber-500 hover:bg-amber-400 font-black text-black text-lg shadow-xl transition-all active:scale-95">DOUBLE</button>
+                    <button onclick="handleUserMove('Y')" class="py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-black text-lg shadow-xl transition-all active:scale-95">SPLIT</button>
+                </div>
+
+                <button id="reveal-btn" onclick="showReveal()" class="hidden-section w-full mt-10 py-4 rounded-xl bg-white/5 border border-white/10 text-yellow-500 text-xs font-black uppercase tracking-widest animate-pulse">
+                    Request Strategy Intelligence
+                </button>
+            </div>
+
+            <div class="w-full max-w-4xl mt-8 glass-panel rounded-3xl p-6">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Live Session History</p>
+                <div id="session-log" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-2 text-sm font-bold">
+                    <div class="text-slate-500 italic">No moves recorded yet...</div>
+                </div>
+            </div>
+
+            <button onclick="startNewGame()" id="deal-btn" class="mt-8 px-16 py-5 bg-yellow-500 text-black font-black rounded-full text-2xl uppercase shadow-2xl hover:bg-yellow-400 transition-all">Manual Reset</button>
+        </section>
+
+        <section id="page-stats" class="hidden-section max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-center">
+                <div class="glass-panel p-10 rounded-[2rem] border-b-4 border-green-500">
+                    <p class="text-[10px] font-black text-slate-500 mb-4 uppercase tracking-widest">Accuracy</p>
+                    <p id="acc-today" class="text-6xl font-black text-green-400">0%</p>
+                </div>
+                <div class="glass-panel p-10 rounded-[2rem] border-b-4 border-rose-500 col-span-2 text-left">
+                    <h3 class="font-black text-rose-500 mb-4 uppercase tracking-widest">Focus Requirement</h3>
+                    <p id="top-mistake" class="text-xl text-slate-300 italic">Analyzing tactical patterns...</p>
+                </div>
+            </div>
+            <div class="glass-panel p-10 rounded-[2rem] flex flex-col md:flex-row gap-6 justify-center items-center">
+                <button onclick="downloadCSV()" class="bg-slate-100 text-black px-10 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-white transition-all">Download CSV</button>
+                <button onclick="resetStats()" class="bg-rose-900/30 text-rose-500 border border-rose-500/30 px-10 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Reset History</button>
+            </div>
+        </section>
+
+        <section id="page-chart" class="hidden-section max-w-4xl mx-auto text-center">
+            <div class="glass-panel p-6 rounded-[2rem] bg-white shadow-2xl inline-block">
+                <img src="WhatsApp Image 2026-02-27 at 7.59.41 PM.jpeg" class="rounded-xl mx-auto max-w-full">
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- STRATEGY ENGINE ---
+        const STRATEGY_MAP = {
+            pairs: {"A,A":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"10,10":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"9,9":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"Y",9:"Y",10:"N",11:"N"},"8,8":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"7,7":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"6,6":{2:"YN",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"N",9:"N",10:"N",11:"N"},"5,5":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"4,4":{2:"N",3:"N",4:"N",5:"YN",6:"YN",7:"N",8:"N",9:"N",10:"N",11:"N"},"3,3":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"2,2":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"}},
+            soft: {9:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},8:{2:"S",3:"S",4:"S",5:"S",6:"Ds",7:"S",8:"S",9:"S",10:"S",11:"S"},7:{2:"Ds",3:"Ds",4:"Ds",5:"Ds",6:"Ds",7:"S",8:"S",9:"H",10:"H",11:"H"},6:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},5:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},4:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},3:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},2:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"}},
+            hard: {17:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},16:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},15:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},14:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},13:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},12:{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},11:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"D",11:"D"},10:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"H",11:"H"},9:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},8:{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",10:"H",11:"H"}}
+        };
+
+        let game = { pHand: [], dHand: [], active: false, turn: 'P', correctMove: null, attempts: 0, timer: null };
+
+        function startNewGame() {
+            clearTimeout(game.timer);
+            document.getElementById('timer-bar').style.width = '0%';
+            game = { pHand: [getCard(), getCard()], dHand: [getCard(), getCard()], active: true, turn: 'P', attempts: 0 };
+            document.getElementById('reveal-btn').classList.add('hidden-section');
+            updateStrategy();
+            updateUI();
+            setFeedback("Awaiting Move", "New Hand Dealt", "text-slate-300");
+        }
+
+        function getCard() { 
+            const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11]; 
+            return cards[Math.floor(Math.random()*cards.length)]; 
+        }
+
+        function getScore(hand) {
+            let total = hand.reduce((a,b) => a+b, 0);
+            let aces = hand.filter(x => x === 11).length;
+            while(total > 21 && aces > 0) { total -= 10; aces--; }
+            return total;
+        }
+
+        function updateStrategy() {
+            const score = getScore(game.pHand);
+            const dealerUp = game.dHand[0];
+            
+            // Priority 1: Pairs (Y/YN = Split)
+            if (game.pHand.length === 2 && game.pHand[0] === game.pHand[1]) {
+                const pairKey = game.pHand[0] === 11 ? "A,A" : `${game.pHand[0]},${game.pHand[0]}`;
+                const action = STRATEGY_MAP.pairs[pairKey][dealerUp];
+                if (action === "Y" || action === "YN") { game.correctMove = "Y"; return; }
+            }
+
+            // Priority 2: Fallback to Total charts
+            if (game.pHand.includes(11) && score <= 21) {
+                let softKey = score - 11;
+                game.correctMove = STRATEGY_MAP.soft[softKey] ? STRATEGY_MAP.soft[softKey][dealerUp] : 'S';
+            } else {
+                let hardKey = score < 8 ? 8 : (score > 17 ? 17 : score);
+                game.correctMove = STRATEGY_MAP.hard[hardKey][dealerUp];
+            }
+        }
+
+        function handleUserMove(move) {
+            if (!game.active) return;
+            const valid = (move === game.correctMove) || 
+                          (game.correctMove === 'Ds' && move === 'S') || 
+                          (game.correctMove === 'D' && move === 'H') || 
+                          (game.correctMove === 'YN' && move === 'Y');
+            
+            saveStat(valid, getScore(game.pHand), move);
+            logMove(valid, move, getScore(game.pHand), game.dHand[0]);
+
+            if (valid) {
+                flashTable('correct-flash');
+                setFeedback("CORRECT MOVE", "Tactical selection matches chart.", "text-green-400");
+                if (move === 'H' || (move === 'D' && game.pHand.length === 2)) {
+                    game.pHand.push(getCard());
+                    if (getScore(game.pHand) > 21) endGame("Bust! Dealer Wins.");
+                    else { updateStrategy(); updateUI(); }
+                } else { dealerPlay(); }
+            } else {
+                flashTable('incorrect-flash');
+                setFeedback("INCORRECT MOVE", "The book move is different.", "text-rose-500");
+                game.attempts++;
+                if (game.attempts >= 2) document.getElementById('reveal-btn').classList.remove('hidden-section');
+            }
+        }
+
+        // --- FEEDBACK & LOGGING UTILS ---
+        function setFeedback(label, msg, color) {
+            document.getElementById('status-label').innerText = label;
+            document.getElementById('feedback-text').innerText = msg;
+            document.getElementById('feedback-text').className = `text-2xl font-black italic transition-all ${color}`;
+        }
+
+        function flashTable(className) {
+            const table = document.getElementById('table-surface');
+            table.classList.remove('correct-flash', 'incorrect-flash');
+            void table.offsetWidth; // Trigger reflow
+            table.classList.add(className);
+        }
+
+        function logMove(ok, move, pScore, dUp) {
+            const log = document.getElementById('session-log');
+            if (log.innerHTML.includes('No moves')) log.innerHTML = '';
+            const names = {'H':'Hit','S':'Stand','D':'Double','Y':'Split'};
+            const entry = document.createElement('div');
+            entry.className = `p-2 rounded border-l-4 ${ok ? 'bg-green-500/10 border-green-500 text-green-400' : 'bg-rose-500/10 border-rose-500 text-rose-400'}`;
+            entry.innerHTML = `<span class="opacity-50">${ok ? '✓' : '✗'}</span> ${names[move]} on ${pScore} vs Dealer ${dUp === 11 ? 'A' : dUp}`;
+            log.prepend(entry);
+        }
+
+        // --- GAME ENGINE CONTINUED ---
+        function dealerPlay() {
+            game.turn = 'D';
+            while(getScore(game.dHand) < 17) game.dHand.push(getCard());
+            const p = getScore(game.pHand), d = getScore(game.dHand);
+            if (d > 21) endGame("Dealer Busts! You Win.");
+            else if (p > d) endGame(`Win: ${p} vs ${d}`);
+            else if (d > p) endGame(`Loss: ${d} vs ${p}`);
+            else endGame("Push. Tie Game.");
+        }
+
+        function endGame(msg) { 
+            game.active = false; setFeedback("ROUND COMPLETE", msg, "text-yellow-400"); updateUI();
+            document.getElementById('timer-bar').style.width = '100%';
+            game.timer = setTimeout(startNewGame, 100);
+        }
+
+        function getCard() { const c = [2,3,4,5,6,7,8,9,10,10,10,10,11]; return c[Math.floor(Math.random()*c.length)]; }
+
+        // --- DATA MGMT ---
+        function downloadCSV() {
+            const s = JSON.parse(localStorage.getItem('bj_v3_stats')) || [];
+            let csv = "Timestamp,Accuracy,HandTotal,Action\n";
+            s.forEach(x => csv += `${new Date(x.t).toLocaleString()},${x.ok ? 'Correct' : 'Incorrect'},${x.h},${x.m}\n`);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'training_data.csv'; a.click();
+        }
+
+        function resetStats() { if(confirm("Clear history?")) { localStorage.removeItem('bj_v3_stats'); location.reload(); } }
+
+        function saveStat(ok, h, m) {
+            let s = JSON.parse(localStorage.getItem('bj_v3_stats')) || [];
+            s.push({ t: Date.now(), ok, h, m });
+            localStorage.setItem('bj_v3_stats', JSON.stringify(s));
+        }
+
+        // --- UI UTILS ---
+        function updateUI() {
+            const cHTML = (v, h) => `<div class="card bg-${h?'slate-700':'white'} ${h?'':'text-black'} rounded-2xl flex items-center justify-center text-5xl font-black neon-gold">${h?'?':(v===11?'A':v)}</div>`;
+            document.getElementById('dealer-cards').innerHTML = game.dHand.map((c, i) => cHTML(c, i === 1 && game.turn === 'P' && game.active)).join('');
+            document.getElementById('player-cards').innerHTML = game.pHand.map(c => cHTML(c, false)).join('');
+            document.getElementById('player-score').innerText = getScore(game.pHand);
+            document.getElementById('dealer-score').innerText = (game.turn === 'P' && game.active) ? "?" : getScore(game.dHand);
+        }
+
+        function showPage(id) { 
+            ['play','stats','chart'].forEach(p => document.getElementById(`page-${p}`).classList.add('hidden-section'));
+            document.getElementById(`page-${id}`).classList.remove('hidden-section'); 
+            if(id === 'stats') {
+                const s = JSON.parse(localStorage.getItem('bj_v3_stats')) || [];
+                document.getElementById('acc-today').innerText = s.length ? Math.round((s.filter(x => x.ok).length/s.length)*100) + "%" : "0%";
+            }
+        }
+
+        function showReveal() { const m = {'H':'Hit','S':'Stand','D':'Double','Y':'Split','Ds':'Double','YN':'Split'}; alert(`REVEAL: Book move is ${m[game.correctMove].toUpperCase()}.`); }
+        window.onload = startNewGame;
+    </script>
+</body>
+</html>
