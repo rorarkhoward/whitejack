@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blackjack Pro Trainer | Multi-Deck Shoe</title>
+    <title>Blackjack Pro Trainer | Final Rule Set</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -18,12 +18,13 @@
         .incorrect-flash { animation: flashRed 0.5s; }
         @keyframes flashGreen { 0% { background: transparent; } 50% { background: rgba(34, 197, 94, 0.3); } 100% { background: transparent; } }
         @keyframes flashRed { 0% { background: transparent; } 50% { background: rgba(225, 29, 72, 0.3); } 100% { background: transparent; } }
+        .disabled-btn { opacity: 0.2; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
     </style>
 </head>
 <body class="text-white min-h-screen">
 
     <nav class="glass-panel sticky top-0 z-50 px-8 py-4 flex justify-between items-center border-b border-yellow-900/20">
-        <h1 class="text-2xl font-black tracking-tighter text-yellow-500 uppercase">Whitejack <span class="text-white">Pro</span></h1>
+        <h1 class="text-2xl font-black tracking-tighter text-yellow-500 uppercase">Blackjack <span class="text-white">Pro</span></h1>
         <div class="flex gap-8 text-sm font-bold uppercase tracking-widest text-slate-400">
             <button onclick="showPage('play')" class="hover:text-yellow-400">Training</button>
             <button onclick="showPage('stats')" class="hover:text-yellow-400">Insights</button>
@@ -35,22 +36,18 @@
         <section id="page-play" class="flex flex-col items-center">
             <div id="table-surface" class="glass-panel w-full max-w-5xl rounded-[4rem] p-12 md:p-20 border-t-8 border-yellow-600 relative overflow-hidden shadow-2xl transition-colors duration-500">
                 
-                <div class="absolute top-8 right-12 text-[10px] font-black text-yellow-500/30 uppercase tracking-[0.2em]">
-                    Cards in Shoe: <span id="shoe-count">0</span>
-                </div>
-
                 <div class="text-center mb-16">
-                    <p class="text-lg font-black text-yellow-500/60 tracking-[0.4em] uppercase mb-8">Dealer Hand (<span id="dealer-score">?</span>)</p>
+                    <p class="text-lg font-black text-yellow-500/60 tracking-[0.4em] uppercase mb-8">Dealer Position (<span id="dealer-score">?</span>)</p>
                     <div id="dealer-cards" class="flex justify-center gap-8 min-h-[160px]"></div>
                 </div>
 
                 <div class="text-center mb-12">
                     <div id="player-cards-container" class="flex justify-center gap-12 mb-10 min-h-[200px] flex-wrap"></div>
-                    <p class="text-xl font-black text-yellow-500 tracking-[0.3em] uppercase mb-6">Your Total (<span id="active-score" class="text-4xl">0</span>)</p>
+                    <p class="text-xl font-black text-yellow-500 tracking-[0.3em] uppercase mb-6">Your Tactical Hand (<span id="active-score" class="text-4xl">0</span>)</p>
                     
                     <div id="feedback-box" class="bg-slate-900/70 rounded-[2.5rem] py-8 px-12 inline-block min-w-[450px] border border-white/10">
                         <div id="status-label" class="text-base font-black tracking-[0.4em] uppercase mb-3 text-slate-500">Decision Outcome</div>
-                        <div id="feedback-text" class="text-4xl font-black italic text-slate-300">Shuffling Shoe...</div>
+                        <div id="feedback-text" class="text-4xl font-black italic text-slate-300">Ready for Deal</div>
                     </div>
 
                     <div class="w-full bg-slate-800 rounded-full mt-12 h-2 overflow-hidden">
@@ -59,27 +56,26 @@
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-8">
-                    <button onclick="handleUserMove('H')" class="py-6 rounded-3xl bg-blue-600 hover:bg-blue-500 font-black text-2xl shadow-2xl transition-all active:scale-90">HIT</button>
-                    <button onclick="handleUserMove('S')" class="py-6 rounded-3xl bg-rose-600 hover:bg-rose-500 font-black text-2xl shadow-2xl transition-all active:scale-90">STAND</button>
-                    <button onclick="handleUserMove('D')" class="py-6 rounded-3xl bg-amber-500 hover:bg-amber-400 font-black text-2xl text-black shadow-2xl transition-all active:scale-90">DOUBLE</button>
-                    <button onclick="handleUserMove('Y')" class="py-6 rounded-3xl bg-indigo-600 hover:bg-indigo-500 font-black text-2xl shadow-2xl transition-all active:scale-90">SPLIT</button>
+                    <button id="btn-H" onclick="handleUserMove('H')" class="py-6 rounded-3xl bg-blue-600 hover:bg-blue-500 font-black text-2xl shadow-2xl transition-all active:scale-90">HIT</button>
+                    <button id="btn-S" onclick="handleUserMove('S')" class="py-6 rounded-3xl bg-rose-600 hover:bg-rose-500 font-black text-2xl shadow-2xl transition-all active:scale-90">STAND</button>
+                    <button id="btn-D" onclick="handleUserMove('D')" class="py-6 rounded-3xl bg-amber-500 hover:bg-amber-400 font-black text-2xl text-black shadow-2xl transition-all active:scale-90">DOUBLE</button>
+                    <button id="btn-Y" onclick="handleUserMove('Y')" class="py-6 rounded-3xl bg-indigo-600 hover:bg-indigo-500 font-black text-2xl shadow-2xl transition-all active:scale-90">SPLIT</button>
                 </div>
 
                 <button id="reveal-btn" onclick="showReveal()" class="hidden-section w-full mt-12 py-5 rounded-2xl bg-white/5 border border-white/10 text-yellow-500 text-sm font-black uppercase tracking-[0.5em] animate-pulse">Request Strategy Intelligence</button>
             </div>
 
-            <button onclick="startNewGame()" id="deal-btn" class="mt-12 px-20 py-6 bg-yellow-500 text-black font-black rounded-full text-3xl uppercase shadow-2xl hover:bg-yellow-400">Manual Reset</button>
-
-            <div class="flex gap-4 mt-8">
-                <button onclick="downloadCSV()" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest border border-white/10">Download CSV</button>
-                <button onclick="resetStats()" class="bg-rose-900/20 text-rose-500 px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest border border-rose-500/20">Reset Stats</button>
-            </div>
+            <button onclick="startNewGame()" id="deal-btn" class="mt-8 px-20 py-6 bg-yellow-500 text-black font-black rounded-full text-3xl uppercase shadow-2xl hover:bg-yellow-400 transition-all">Manual Reset</button>
         </section>
 
         <section id="page-stats" class="hidden-section max-w-5xl mx-auto">
             <div class="glass-panel p-16 rounded-[3rem] text-center mb-12">
                 <p class="text-sm font-black text-slate-500 mb-6 uppercase tracking-[0.5em]">Cumulative Accuracy</p>
                 <p id="acc-today" class="text-9xl font-black text-green-400">0%</p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button onclick="downloadCSV()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest border border-white/10">Download CSV</button>
+                <button onclick="resetStats()" class="bg-rose-900/20 text-rose-500 px-8 py-4 rounded-xl font-bold uppercase tracking-widest border border-rose-500/20">Reset Stats</button>
             </div>
         </section>
 
@@ -97,64 +93,56 @@
             hard: {17:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},16:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},15:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},14:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},13:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},12:{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},11:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"D",11:"D"},10:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"H",11:"H"},9:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},8:{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",10:"H",11:"H"}}
         };
 
-        // --- NEW MULTI-DECK SHOE LOGIC ---
-        let game = { 
-            shoe: [], 
-            hands: [], activeIdx: 0, dHand: [], active: false, turn: 'P', correctMove: null, attempts: 0, timer: null 
-        };
+        let game = { shoe: [], hands: [], activeIdx: 0, dHand: [], active: false, turn: 'P', correctMove: null, attempts: 0, timer: null };
 
-        function createShoe(numDecks = 6) {
+        function createShoe() {
             let s = [];
             const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11];
-            for (let i = 0; i < numDecks; i++) {
-                for (let j = 0; j < 4; j++) { // 4 suits
-                    s.push(...cards);
-                }
-            }
-            // Fisher-Yates Shuffle for maximum randomness
-            for (let i = s.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [s[i], s[j]] = [s[j], s[i]];
-            }
+            for (let i=0; i<6; i++) for (let j=0; j<4; j++) s.push(...cards);
+            for (let i=s.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [s[i],s[j]]=[s[j],s[i]]; }
             return s;
         }
 
-        function getCardFromShoe() {
-            if (game.shoe.length < 20) { // Reshuffle when low
-                game.shoe = createShoe();
-            }
-            document.getElementById('shoe-count').innerText = game.shoe.length;
-            return game.shoe.pop();
-        }
+        function getCard() { if (game.shoe.length < 20) game.shoe = createShoe(); return game.shoe.pop(); }
 
         function startNewGame() {
-            if (game.shoe.length === 0) game.shoe = createShoe();
             clearTimeout(game.timer);
             document.getElementById('timer-bar').style.width = '0%';
-            game.hands = [[getCardFromShoe(), getCardFromShoe()]];
-            game.dHand = [getCardFromShoe(), getCardFromShoe()];
+            game.hands = [[getCard(), getCard()]];
+            game.dHand = [getCard(), getCard()];
             game.activeIdx = 0; game.active = true; game.turn = 'P'; game.attempts = 0;
-            document.getElementById('reveal-btn').classList.add('hidden-section');
             updateStrategy();
             updateUI();
-            setFeedback("NEW DEAL", "Shoe is live. Tactical focus active.", "text-slate-300");
+            setFeedback("NEW DEAL", "Tactical hand ready.", "text-slate-300");
         }
 
         function updateStrategy() {
             let hand = game.hands[game.activeIdx];
             const dUp = game.dHand[0];
-            if (hand.length === 2 && hand[0] === hand[1]) {
+            const score = getScore(hand);
+
+            // BUTTON LOCKS
+            document.getElementById('btn-D').classList.toggle('disabled-btn', hand.length !== 2);
+            const canSplit = (game.hands.length === 1 && hand.length === 2 && hand[0] === hand[1]);
+            document.getElementById('btn-Y').classList.toggle('disabled-btn', !canSplit);
+
+            // 1. PAIR PRIORITY
+            if (canSplit) {
                 const pairKey = hand[0] === 11 ? "A,A" : `${hand[0]},${hand[0]}`;
                 const move = STRATEGY_MAP.pairs[pairKey][dUp];
                 if (move === "Y" || move === "YN") { game.correctMove = "Y"; return; }
             }
+
+            // 2. SOFT VS HARD PRIORITY
             const raw = hand.reduce((a,b)=>a+b, 0);
             const hasAce = hand.includes(11);
-            if (hasAce && (raw + 10 <= 21)) {
+            
+            // Soft logic ONLY for the first 2 cards
+            if (hand.length === 2 && hasAce && (raw + 10 <= 21)) {
                 let softKey = (raw + 10) - 11;
                 game.correctMove = STRATEGY_MAP.soft[softKey] ? STRATEGY_MAP.soft[softKey][dUp] : 'S';
             } else {
-                const score = getScore(hand);
+                // Hard logic for all subsequent cards
                 let hardKey = score < 8 ? 8 : (score > 17 ? 17 : score);
                 game.correctMove = STRATEGY_MAP.hard[hardKey][dUp];
             }
@@ -162,32 +150,39 @@
 
         function handleUserMove(move) {
             if (!game.active) return;
+            let hand = game.hands[game.activeIdx];
+            if (move === 'D' && hand.length > 2) return;
+            if (move === 'Y' && game.hands.length > 1) return;
+
             const valid = (move === game.correctMove) || 
                           (game.correctMove === 'Ds' && move === 'S') || 
                           (game.correctMove === 'D' && move === 'H') || 
                           (game.correctMove === 'YN' && move === 'Y');
-            saveStat(valid, getScore(game.hands[game.activeIdx]), move);
+            
+            saveStat(valid, getScore(hand), move);
+
             if (valid) {
                 flashTable('correct-flash');
-                setFeedback("CORRECT", "Optimal tactical move confirmed.", "text-green-400");
-                processMove(move);
+                setFeedback("CORRECT", "Optimal book move confirmed.", "text-green-400");
+                processAction(move);
             } else {
                 flashTable('incorrect-flash');
                 setFeedback("INCORRECT", "Deviation from basic strategy.", "text-rose-500 font-black");
-                game.attempts++;
-                if (game.attempts >= 2) document.getElementById('reveal-btn').classList.remove('hidden-section');
             }
         }
 
-        function processMove(move) {
+        function processAction(move) {
             let h = game.hands[game.activeIdx];
             if (move === 'Y') {
                 const c = h[0];
-                game.hands[game.activeIdx] = [c, getCardFromShoe()];
-                game.hands.push([c, getCardFromShoe()]);
+                game.hands[game.activeIdx] = [c, getCard()];
+                game.hands.push([c, getCard()]);
                 updateStrategy(); updateUI();
-            } else if (move === 'H' || (move === 'D' && h.length === 2)) {
-                h.push(getCardFromShoe());
+            } else if (move === 'D') {
+                h.push(getCard());
+                moveToNext(getScore(h) > 21 ? "DBL BUST" : "DBL STAND");
+            } else if (move === 'H') {
+                h.push(getCard());
                 if (getScore(h) > 21) moveToNext("BUST");
                 else { updateStrategy(); updateUI(); }
             } else { moveToNext("STAND"); }
@@ -196,14 +191,13 @@
         function moveToNext(reason) {
             if (game.activeIdx < game.hands.length - 1) {
                 game.activeIdx++;
-                setFeedback("HAND TRANSITION", reason + ": Switching focus...", "text-blue-400");
                 updateStrategy(); updateUI();
             } else { dealerPlay(); }
         }
 
         function dealerPlay() {
             game.turn = 'D';
-            while(getScore(game.dHand) < 17) game.dHand.push(getCardFromShoe());
+            while(getScore(game.dHand) < 17) game.dHand.push(getCard());
             const dS = getScore(game.dHand);
             let res = game.hands.map((h, i) => {
                 const p = getScore(h);
@@ -216,7 +210,7 @@
         }
 
         function endGame(msg) { 
-            game.active = false; setFeedback("HAND COMPLETE", msg, "text-yellow-400"); updateUI();
+            game.active = false; setFeedback("COMPLETE", msg, "text-yellow-400"); updateUI();
             document.getElementById('timer-bar').style.width = '100%';
             game.timer = setTimeout(startNewGame, 1000); 
         }
@@ -227,12 +221,15 @@
             while(t > 21 && aces > 0) { t -= 10; aces--; }
             return t;
         }
+
         function flashTable(c) { const t=document.getElementById('table-surface'); t.classList.remove('correct-flash','incorrect-flash'); void t.offsetWidth; t.classList.add(c); }
+        
         function setFeedback(l, m, c) {
             document.getElementById('status-label').innerText = l;
             document.getElementById('feedback-text').innerText = m;
             document.getElementById('feedback-text').className = `text-4xl font-black italic transition-all ${c}`;
         }
+
         function updateUI() {
             const cHTML = (v, h, active) => `<div class="card bg-${h?'slate-700':'white'} ${h?'':'text-black'} rounded-3xl flex items-center justify-center text-6xl font-black ${active ? 'neon-gold' : 'opacity-40'}">${h?'?':(v===11?'A':v)}</div>`;
             document.getElementById('dealer-cards').innerHTML = game.dHand.map((c,i)=>cHTML(c, i===1 && game.turn==='P' && game.active, true)).join('');
@@ -246,34 +243,33 @@
             document.getElementById('active-score').innerText = getScore(game.hands[game.activeIdx]);
             document.getElementById('dealer-score').innerText = (game.turn==='P' && game.active) ? "?" : getScore(game.dHand);
         }
+
         function saveStat(ok, h, m) {
-            let s = JSON.parse(localStorage.getItem('bj_v8_stats')) || [];
+            let s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
             s.push({ t: Date.now(), ok, h, m });
-            localStorage.setItem('bj_v8_stats', JSON.stringify(s));
+            localStorage.setItem('bj_stats_v9', JSON.stringify(s));
         }
+
         function downloadCSV() {
-            const s = JSON.parse(localStorage.getItem('bj_v8_stats')) || [];
+            const s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
             let csv = "Timestamp,Accuracy,Score,Action\n";
             s.forEach(x => csv += `${new Date(x.t).toLocaleString()},${x.ok?'OK':'FAIL'},${x.h},${x.m}\n`);
             const blob = new Blob([csv], {type:'text/csv'});
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download='blackjack_stats.csv'; a.click();
+            const a = document.createElement('a'); a.href=url; a.download='blackjack_training.csv'; a.click();
         }
-        function resetStats() { if(confirm("Clear data?")) { localStorage.removeItem('bj_v8_stats'); location.reload(); } }
+
+        function resetStats() { if(confirm("Reset all data?")) { localStorage.removeItem('bj_stats_v9'); location.reload(); } }
+
         function showPage(id) { 
             ['play','stats','chart'].forEach(p => document.getElementById(`page-${p}`).classList.add('hidden-section'));
             document.getElementById(`page-${id}`).classList.remove('hidden-section'); 
             if(id === 'stats') {
-                const s = JSON.parse(localStorage.getItem('bj_v8_stats')) || [];
+                const s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
                 document.getElementById('acc-today').innerText = s.length ? Math.round((s.filter(x=>x.ok).length/s.length)*100)+"%" : "0%";
             }
-        }
-        function showReveal() { 
-            const m = {'H':'Hit','S':'Stand','D':'Double','Y':'Split','Ds':'Double','YN':'Split'}; 
-            alert(`REVEAL: Book move is ${m[game.correctMove].toUpperCase()}.`); 
         }
         window.onload = startNewGame;
     </script>
 </body>
 </html>
-
