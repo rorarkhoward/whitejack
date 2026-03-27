@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blackjack Pro Trainer | Mobile Optimized</title>
+<title>Blackjack Pro Trainer | Mobile Fixed</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,32 +14,36 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-/* Glass UI */
+/* UI */
 .glass-panel {
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Cards responsive */
-.card {
-    transition: all 0.3s ease;
-    animation: cardPop 0.4s ease-out;
-    width: 70px;
-    height: 100px;
+.neon-gold {
+    border: 3px solid #fbbf24;
+    box-shadow: 0 0 15px rgba(251,191,36,0.4);
 }
 
-@media (min-width: 640px) {
+/* MOBILE CARDS */
+.card {
+    width: 60px;
+    height: 85px;
+    animation: cardPop 0.3s ease-out;
+}
+
+@media (min-width:640px){
     .card { width: 90px; height: 130px; }
 }
 
-@media (min-width: 1024px) {
-    .card { width: 112px; height: 160px; }
+@media (min-width:1024px){
+    .card { width:112px; height:160px; }
 }
 
 @keyframes cardPop {
-    from { opacity:0; transform:scale(0.5) translateY(40px); }
-    to { opacity:1; transform:scale(1) translateY(0); }
+    from { opacity:0; transform:scale(0.6); }
+    to { opacity:1; transform:scale(1); }
 }
 
 .hidden-section { display:none; }
@@ -48,30 +52,17 @@ body {
     height:6px;
     background:#fbbf24;
     width:0%;
-    transition: width 1s linear;
 }
 
-/* Feedback flashes */
 .correct-flash { animation: flashGreen 0.5s; }
 .incorrect-flash { animation: flashRed 0.5s; }
 
-@keyframes flashGreen {
-    50% { background: rgba(34,197,94,0.3); }
-}
-
-@keyframes flashRed {
-    50% { background: rgba(225,29,72,0.3); }
-}
+@keyframes flashGreen { 50% { background: rgba(34,197,94,0.3); } }
+@keyframes flashRed { 50% { background: rgba(225,29,72,0.3); } }
 
 .disabled-btn {
-    opacity:0.2;
+    opacity:0.3;
     pointer-events:none;
-    filter: grayscale(1);
-}
-
-.neon-gold {
-    border:3px solid #fbbf24;
-    box-shadow:0 0 15px rgba(251,191,36,0.4);
 }
 </style>
 </head>
@@ -79,94 +70,84 @@ body {
 <body class="text-white min-h-screen overflow-x-hidden">
 
 <!-- NAV -->
-<nav class="glass-panel sticky top-0 z-50 px-4 sm:px-6 py-3 flex flex-col sm:flex-row gap-2 justify-between items-center">
-    <h1 class="text-lg sm:text-2xl font-black text-yellow-500 uppercase">
+<nav class="glass-panel sticky top-0 z-50 w-full px-4 py-3 flex justify-between items-center">
+    <h1 class="text-lg font-black text-yellow-500 uppercase">
         Blackjack <span class="text-white">Pro</span>
     </h1>
 
-    <div class="flex gap-4 sm:gap-8 text-xs sm:text-sm font-bold uppercase text-slate-400">
+    <div class="flex gap-4 text-xs font-bold uppercase text-slate-400">
         <button onclick="showPage('play')">Training</button>
         <button onclick="showPage('stats')">Insights</button>
         <button onclick="showPage('chart')">Chart</button>
     </div>
 </nav>
 
-<main class="container mx-auto p-3 sm:p-6 md:p-10">
+<main class="w-full px-3 sm:px-6">
 
-<!-- PLAY -->
-<section id="page-play" class="flex flex-col items-center">
+<section id="page-play" class="w-full flex justify-center">
 
+<!-- TABLE -->
 <div id="table-surface"
-class="glass-panel w-full max-w-5xl rounded-[2rem] p-4 sm:p-8 md:p-16 border-t-8 border-yellow-600 relative overflow-hidden shadow-2xl">
+class="glass-panel w-full max-w-md rounded-3xl p-4 flex flex-col justify-between h-[calc(100vh-110px)] border-t-4 border-yellow-600">
 
-<!-- DEALER -->
-<div class="text-center mb-8 sm:mb-12 md:mb-16">
-<p class="text-sm sm:text-lg font-black text-yellow-500/60 uppercase mb-4 sm:mb-6">
+<!-- TOP -->
+<div>
+
+<div class="text-center mb-4">
+<p class="text-xs font-black text-yellow-500 uppercase mb-2">
 Dealer (<span id="dealer-score">?</span>)
 </p>
 
-<div id="dealer-cards"
-class="flex justify-center gap-3 sm:gap-6 md:gap-8 min-h-[100px] sm:min-h-[140px]">
-</div>
+<div id="dealer-cards" class="flex justify-center gap-3 min-h-[80px]"></div>
 </div>
 
-<!-- PLAYER -->
-<div class="text-center mb-6 sm:mb-10">
+<div class="text-center mb-3">
+<div id="player-cards-container" class="flex justify-center gap-3 min-h-[100px] flex-wrap"></div>
 
-<div id="player-cards-container"
-class="flex justify-center gap-4 sm:gap-8 mb-6 sm:mb-10 min-h-[140px] flex-wrap">
-</div>
-
-<p class="text-lg sm:text-xl font-black text-yellow-500 uppercase mb-4">
-Score: <span id="active-score" class="text-2xl sm:text-4xl">0</span>
+<p class="text-sm font-black text-yellow-500 uppercase">
+Score: <span id="active-score">0</span>
 </p>
+</div>
 
-<!-- FEEDBACK -->
 <div id="feedback-box"
-class="bg-slate-900/70 rounded-xl py-4 px-4 sm:px-8 w-full max-w-md mx-auto border border-white/10">
-<div id="status-label" class="text-xs uppercase mb-2 text-slate-500">
+class="bg-slate-900/70 rounded-xl py-2 px-3 text-center border border-white/10">
+<div id="status-label" class="text-[10px] uppercase text-slate-500">
 Decision
 </div>
 
-<div id="feedback-text" class="text-xl sm:text-3xl font-black text-slate-300">
+<div id="feedback-text" class="text-lg font-black text-slate-300">
 Ready
 </div>
 </div>
 
-<div class="w-full bg-slate-800 rounded-full mt-6 h-2 overflow-hidden">
+<div class="w-full bg-slate-800 rounded-full mt-3 h-1">
 <div id="timer-bar" class="timer-bar"></div>
 </div>
 
 </div>
 
 <!-- BUTTONS -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 w-full">
+<div class="grid grid-cols-2 gap-3 mt-3">
+
 <button id="btn-H" onclick="handleUserMove('H')"
-class="py-4 sm:py-5 rounded-xl bg-blue-600 text-lg sm:text-xl font-black active:scale-90">HIT</button>
+class="py-3 rounded-xl bg-blue-600 font-black text-sm active:scale-90">HIT</button>
 
 <button id="btn-S" onclick="handleUserMove('S')"
-class="py-4 sm:py-5 rounded-xl bg-rose-600 text-lg sm:text-xl font-black active:scale-90">STAND</button>
+class="py-3 rounded-xl bg-rose-600 font-black text-sm active:scale-90">STAND</button>
 
 <button id="btn-D" onclick="handleUserMove('D')"
-class="py-4 sm:py-5 rounded-xl bg-amber-500 text-black text-lg sm:text-xl font-black active:scale-90">DOUBLE</button>
+class="py-3 rounded-xl bg-amber-500 text-black font-black text-sm active:scale-90">DOUBLE</button>
 
 <button id="btn-Y" onclick="handleUserMove('Y')"
-class="py-4 sm:py-5 rounded-xl bg-indigo-600 text-lg sm:text-xl font-black active:scale-90">SPLIT</button>
-</div>
+class="py-3 rounded-xl bg-indigo-600 font-black text-sm active:scale-90">SPLIT</button>
 
 </div>
 
-<button onclick="startNewGame()"
-class="mt-6 px-10 py-4 bg-yellow-500 text-black font-black rounded-full text-lg sm:text-2xl">
-Reset
-</button>
+</div>
 
 </section>
 
-<!-- KEEP REST SAME (LOGIC + SCRIPT UNCHANGED) -->
-
-<script>
-/* ⚠️ YOUR ORIGINAL JS — EXACTLY SAME (NO CHANGE) */
+<!-- KEEP OTHER SECTIONS SAME -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
