@@ -14,6 +14,7 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/* UI */
 .glass-panel {
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(16px);
@@ -25,7 +26,7 @@ body {
     box-shadow: 0 0 15px rgba(251,191,36,0.4);
 }
 
-/* MOBILE CARDS */
+/* MOBILE FIRST CARDS */
 .card {
     width: 55px;
     height: 80px;
@@ -36,15 +37,16 @@ body {
     .card { width: 90px; height: 130px; }
 }
 
+/* compact */
 .hidden-section { display:none; }
 
 .timer-bar {
     height:4px;
     background:#fbbf24;
     width:0%;
-    transition: width 1s linear;
 }
 
+/* feedback */
 .correct-flash { animation: flashGreen 0.4s; }
 .incorrect-flash { animation: flashRed 0.4s; }
 
@@ -60,6 +62,7 @@ body {
 
 <body class="text-white min-h-screen overflow-x-hidden">
 
+<!-- NAV -->
 <nav class="glass-panel sticky top-0 z-50 px-4 py-2 flex justify-between items-center">
     <h1 class="text-lg font-black text-yellow-500 uppercase">
         Blackjack <span class="text-white">Pro</span>
@@ -76,30 +79,38 @@ body {
 
 <section id="page-play" class="flex justify-center">
 
+<!-- TABLE -->
 <div id="table-surface"
-class="glass-panel w-full max-w-sm rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-90px)] border-t-4 border-yellow-600 transition-colors duration-500">
+class="glass-panel w-full max-w-sm rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-90px)] border-t-4 border-yellow-600">
 
+<!-- TOP CONTENT -->
 <div>
 
+<!-- DEALER -->
 <div class="text-center mb-2">
 <p class="text-[10px] font-black text-yellow-500 uppercase mb-1">
 Dealer (<span id="dealer-score">?</span>)
 </p>
+
 <div id="dealer-cards" class="flex justify-center gap-2 min-h-[70px]"></div>
 </div>
 
+<!-- PLAYER -->
 <div class="text-center mb-2">
 <div id="player-cards-container" class="flex justify-center gap-2 min-h-[90px] flex-wrap"></div>
+
 <p class="text-xs font-black text-yellow-500 uppercase">
 Score: <span id="active-score">0</span>
 </p>
 </div>
 
+<!-- FEEDBACK -->
 <div id="feedback-box"
 class="bg-slate-900/70 rounded-lg py-2 px-2 text-center border border-white/10">
 <div id="status-label" class="text-[9px] uppercase text-slate-500">
 Decision
 </div>
+
 <div id="feedback-text" class="text-sm font-black text-slate-300">
 Ready
 </div>
@@ -111,44 +122,304 @@ Ready
 
 </div>
 
+<!-- BUTTONS (ALWAYS VISIBLE) -->
 <div class="grid grid-cols-2 gap-2 mt-2">
-<button id="btn-H" onclick="handleUserMove('H')" class="py-2 rounded-lg bg-blue-600 font-black text-xs active:scale-90">HIT</button>
-<button id="btn-S" onclick="handleUserMove('S')" class="py-2 rounded-lg bg-rose-600 font-black text-xs active:scale-90">STAND</button>
-<button id="btn-D" onclick="handleUserMove('D')" class="py-2 rounded-lg bg-amber-500 text-black font-black text-xs active:scale-90">DOUBLE</button>
-<button id="btn-Y" onclick="handleUserMove('Y')" class="py-2 rounded-lg bg-indigo-600 font-black text-xs active:scale-90">SPLIT</button>
-</div>
+
+<button id="btn-H" onclick="handleUserMove('H')"
+class="py-2 rounded-lg bg-blue-600 font-black text-xs active:scale-90">HIT</button>
+
+<button id="btn-S" onclick="handleUserMove('S')"
+class="py-2 rounded-lg bg-rose-600 font-black text-xs active:scale-90">STAND</button>
+
+<button id="btn-D" onclick="handleUserMove('D')"
+class="py-2 rounded-lg bg-amber-500 text-black font-black text-xs active:scale-90">DOUBLE</button>
+
+<button id="btn-Y" onclick="handleUserMove('Y')"
+class="py-2 rounded-lg bg-indigo-600 font-black text-xs active:scale-90">SPLIT</button>
 
 </div>
 
+</div>
+
 </section>
 
-<!-- OTHER PAGES SAME -->
-<section id="page-stats" class="hidden-section max-w-5xl mx-auto">
-    <div class="glass-panel p-10 rounded-2xl text-center mb-6">
-        <p class="text-sm font-black text-slate-500 mb-3 uppercase">Accuracy</p>
-        <p id="acc-today" class="text-5xl font-black text-green-400">0%</p>
-    </div>
-</section>
-
-<section id="page-chart" class="hidden-section text-center">
-    <img src="WhatsApp Image 2026-02-27 at 7.59.41 PM.jpeg" class="rounded-xl mx-auto max-w-full">
-</section>
+<!-- KEEP REST SAME -->
 
 <script>
+/* ⚠️ EXACT SAME SCRIPT — NO CHANGE */
 
-/* 🔥 YOUR ORIGINAL SCRIPT (UNCHANGED) */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Pro Trainer | Final Rule Set</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .neon-gold { border: 4px solid #fbbf24; box-shadow: 0 0 25px rgba(251, 191, 36, 0.4); }
+        .card { transition: all 0.3s ease; animation: cardPop 0.4s ease-out; width: 112px; height: 160px; }
+        @keyframes cardPop { from { opacity: 0; transform: scale(0.5) translateY(40px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .hidden-section { display: none; }
+        .timer-bar { height: 8px; background: #fbbf24; width: 0%; transition: width 1s linear; }
+        .correct-flash { animation: flashGreen 0.5s; }
+        .incorrect-flash { animation: flashRed 0.5s; }
+        @keyframes flashGreen { 0% { background: transparent; } 50% { background: rgba(34, 197, 94, 0.3); } 100% { background: transparent; } }
+        @keyframes flashRed { 0% { background: transparent; } 50% { background: rgba(225, 29, 72, 0.3); } 100% { background: transparent; } }
+        .disabled-btn { opacity: 0.2; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
+    </style>
+</head>
+<body class="text-white min-h-screen">
 
-const STRATEGY_MAP = {...}; // KEEP SAME (paste your full map here)
+    <nav class="glass-panel sticky top-0 z-50 px-8 py-4 flex justify-between items-center border-b border-yellow-900/20">
+        <h1 class="text-2xl font-black tracking-tighter text-yellow-500 uppercase">Blackjack <span class="text-white">Pro</span></h1>
+        <div class="flex gap-8 text-sm font-bold uppercase tracking-widest text-slate-400">
+            <button onclick="showPage('play')" class="hover:text-yellow-400">Training</button>
+            <button onclick="showPage('stats')" class="hover:text-yellow-400">Insights</button>
+            <button onclick="showPage('chart')" class="hover:text-yellow-400">Chart</button>
+        </div>
+    </nav>
 
-/* ⚠️ IMPORTANT:
-PASTE YOUR FULL ORIGINAL SCRIPT EXACTLY HERE
-FROM YOUR FILE — STARTING FROM:
-let game = { ... } 
-TILL:
-window.onload = startNewGame;
-*/
+    <main class="container mx-auto p-4 md:p-10">
+        <section id="page-play" class="flex flex-col items-center">
+            <div id="table-surface" class="glass-panel w-full max-w-5xl rounded-[4rem] p-12 md:p-20 border-t-8 border-yellow-600 relative overflow-hidden shadow-2xl transition-colors duration-500">
+                
+                <div class="text-center mb-16">
+                    <p class="text-lg font-black text-yellow-500/60 tracking-[0.4em] uppercase mb-8">Dealer Position (<span id="dealer-score">?</span>)</p>
+                    <div id="dealer-cards" class="flex justify-center gap-8 min-h-[160px]"></div>
+                </div>
 
-</script>
+                <div class="text-center mb-12">
+                    <div id="player-cards-container" class="flex justify-center gap-12 mb-10 min-h-[200px] flex-wrap"></div>
+                    <p class="text-xl font-black text-yellow-500 tracking-[0.3em] uppercase mb-6">Your Tactical Hand (<span id="active-score" class="text-4xl">0</span>)</p>
+                    
+                    <div id="feedback-box" class="bg-slate-900/70 rounded-[2.5rem] py-8 px-12 inline-block min-w-[450px] border border-white/10">
+                        <div id="status-label" class="text-base font-black tracking-[0.4em] uppercase mb-3 text-slate-500">Decision Outcome</div>
+                        <div id="feedback-text" class="text-4xl font-black italic text-slate-300">Ready for Deal</div>
+                    </div>
 
+                    <div class="w-full bg-slate-800 rounded-full mt-12 h-2 overflow-hidden">
+                        <div id="timer-bar" class="timer-bar"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-8">
+                    <button id="btn-H" onclick="handleUserMove('H')" class="py-6 rounded-3xl bg-blue-600 hover:bg-blue-500 font-black text-2xl shadow-2xl transition-all active:scale-90">HIT</button>
+                    <button id="btn-S" onclick="handleUserMove('S')" class="py-6 rounded-3xl bg-rose-600 hover:bg-rose-500 font-black text-2xl shadow-2xl transition-all active:scale-90">STAND</button>
+                    <button id="btn-D" onclick="handleUserMove('D')" class="py-6 rounded-3xl bg-amber-500 hover:bg-amber-400 font-black text-2xl text-black shadow-2xl transition-all active:scale-90">DOUBLE</button>
+                    <button id="btn-Y" onclick="handleUserMove('Y')" class="py-6 rounded-3xl bg-indigo-600 hover:bg-indigo-500 font-black text-2xl shadow-2xl transition-all active:scale-90">SPLIT</button>
+                </div>
+
+                <button id="reveal-btn" onclick="showReveal()" class="hidden-section w-full mt-12 py-5 rounded-2xl bg-white/5 border border-white/10 text-yellow-500 text-sm font-black uppercase tracking-[0.5em] animate-pulse">Request Strategy Intelligence</button>
+            </div>
+
+            <button onclick="startNewGame()" id="deal-btn" class="mt-8 px-20 py-6 bg-yellow-500 text-black font-black rounded-full text-3xl uppercase shadow-2xl hover:bg-yellow-400 transition-all">Manual Reset</button>
+        </section>
+
+        <section id="page-stats" class="hidden-section max-w-5xl mx-auto">
+            <div class="glass-panel p-16 rounded-[3rem] text-center mb-12">
+                <p class="text-sm font-black text-slate-500 mb-6 uppercase tracking-[0.5em]">Cumulative Accuracy</p>
+                <p id="acc-today" class="text-9xl font-black text-green-400">0%</p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button onclick="downloadCSV()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest border border-white/10">Download CSV</button>
+                <button onclick="resetStats()" class="bg-rose-900/20 text-rose-500 px-8 py-4 rounded-xl font-bold uppercase tracking-widest border border-rose-500/20">Reset Stats</button>
+            </div>
+        </section>
+
+        <section id="page-chart" class="hidden-section max-w-4xl mx-auto text-center">
+            <div class="glass-panel p-8 rounded-[3rem] bg-white shadow-2xl inline-block">
+                <img src="WhatsApp Image 2026-02-27 at 7.59.41 PM.jpeg" class="rounded-2xl mx-auto max-w-full">
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const STRATEGY_MAP = {
+            pairs: {"A,A":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"10,10":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"9,9":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"Y",9:"Y",10:"N",11:"N"},"8,8":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"7,7":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"6,6":{2:"YN",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"N",9:"N",10:"N",11:"N"},"5,5":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"4,4":{2:"N",3:"N",4:"N",5:"YN",6:"YN",7:"N",8:"N",9:"N",10:"N",11:"N"},"3,3":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"2,2":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"}},
+            soft: {9:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},8:{2:"S",3:"S",4:"S",5:"S",6:"Ds",7:"S",8:"S",9:"S",10:"S",11:"S"},7:{2:"Ds",3:"Ds",4:"Ds",5:"Ds",6:"Ds",7:"S",8:"S",9:"H",10:"H",11:"H"},6:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},5:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},4:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},3:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},2:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"}},
+            hard: {17:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},16:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},15:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},14:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},13:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},12:{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},11:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"D",11:"D"},10:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"H",11:"H"},9:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},8:{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",10:"H",11:"H"}}
+        };
+
+        let game = { shoe: [], hands: [], activeIdx: 0, dHand: [], active: false, turn: 'P', correctMove: null, attempts: 0, timer: null };
+
+        function createShoe() {
+            let s = [];
+            const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11];
+            for (let i=0; i<6; i++) for (let j=0; j<4; j++) s.push(...cards);
+            for (let i=s.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [s[i],s[j]]=[s[j],s[i]]; }
+            return s;
+        }
+
+        function getCard() { if (game.shoe.length < 20) game.shoe = createShoe(); return game.shoe.pop(); }
+
+        function startNewGame() {
+            clearTimeout(game.timer);
+            document.getElementById('timer-bar').style.width = '0%';
+            game.hands = [[getCard(), getCard()]];
+            game.dHand = [getCard(), getCard()];
+            game.activeIdx = 0; game.active = true; game.turn = 'P'; game.attempts = 0;
+            updateStrategy();
+            updateUI();
+            setFeedback("NEW DEAL", "Tactical hand ready.", "text-slate-300");
+        }
+
+        function updateStrategy() {
+            let hand = game.hands[game.activeIdx];
+            const dUp = game.dHand[0];
+            const score = getScore(hand);
+
+            // BUTTON LOCKS
+            document.getElementById('btn-D').classList.toggle('disabled-btn', hand.length !== 2);
+            const canSplit = (game.hands.length === 1 && hand.length === 2 && hand[0] === hand[1]);
+            document.getElementById('btn-Y').classList.toggle('disabled-btn', !canSplit);
+
+            // 1. PAIR PRIORITY
+            if (canSplit) {
+                const pairKey = hand[0] === 11 ? "A,A" : `${hand[0]},${hand[0]}`;
+                const move = STRATEGY_MAP.pairs[pairKey][dUp];
+                if (move === "Y" || move === "YN") { game.correctMove = "Y"; return; }
+            }
+
+            // 2. SOFT VS HARD PRIORITY
+            const raw = hand.reduce((a,b)=>a+b, 0);
+            const hasAce = hand.includes(11);
+            
+            // Soft logic ONLY for the first 2 cards
+            if (hand.length === 2 && hasAce && (raw + 10 <= 21)) {
+                let softKey = (raw + 10) - 11;
+                game.correctMove = STRATEGY_MAP.soft[softKey] ? STRATEGY_MAP.soft[softKey][dUp] : 'S';
+            } else {
+                // Hard logic for all subsequent cards
+                let hardKey = score < 8 ? 8 : (score > 17 ? 17 : score);
+                game.correctMove = STRATEGY_MAP.hard[hardKey][dUp];
+            }
+        }
+
+        function handleUserMove(move) {
+            if (!game.active) return;
+            let hand = game.hands[game.activeIdx];
+            if (move === 'D' && hand.length > 2) return;
+            if (move === 'Y' && game.hands.length > 1) return;
+
+            const valid = (move === game.correctMove) || 
+                          (game.correctMove === 'Ds' && move === 'S') || 
+                          (game.correctMove === 'D' && move === 'H') || 
+                          (game.correctMove === 'YN' && move === 'Y');
+            
+            saveStat(valid, getScore(hand), move);
+
+            if (valid) {
+                flashTable('correct-flash');
+                setFeedback("CORRECT", "Optimal book move confirmed.", "text-green-400");
+                processAction(move);
+            } else {
+                flashTable('incorrect-flash');
+                setFeedback("INCORRECT", "Deviation from basic strategy.", "text-rose-500 font-black");
+            }
+        }
+
+        function processAction(move) {
+            let h = game.hands[game.activeIdx];
+            if (move === 'Y') {
+                const c = h[0];
+                game.hands[game.activeIdx] = [c, getCard()];
+                game.hands.push([c, getCard()]);
+                updateStrategy(); updateUI();
+            } else if (move === 'D') {
+                h.push(getCard());
+                moveToNext(getScore(h) > 21 ? "DBL BUST" : "DBL STAND");
+            } else if (move === 'H') {
+                h.push(getCard());
+                if (getScore(h) > 21) moveToNext("BUST");
+                else { updateStrategy(); updateUI(); }
+            } else { moveToNext("STAND"); }
+        }
+
+        function moveToNext(reason) {
+            if (game.activeIdx < game.hands.length - 1) {
+                game.activeIdx++;
+                updateStrategy(); updateUI();
+            } else { dealerPlay(); }
+        }
+
+        function dealerPlay() {
+            game.turn = 'D';
+            while(getScore(game.dHand) < 17) game.dHand.push(getCard());
+            const dS = getScore(game.dHand);
+            let res = game.hands.map((h, i) => {
+                const p = getScore(h);
+                if (p > 21) return `H${i+1} Loss`;
+                if (dS > 21 || p > dS) return `H${i+1} Win`;
+                if (dS > p) return `H${i+1} Loss`;
+                return `H${i+1} Tie`;
+            });
+            endGame(res.join(" | "));
+        }
+
+        function endGame(msg) { 
+            game.active = false; setFeedback("COMPLETE", msg, "text-yellow-400"); updateUI();
+            document.getElementById('timer-bar').style.width = '100%';
+            game.timer = setTimeout(startNewGame, 1000); 
+        }
+
+        function getScore(h) {
+            let t = h.reduce((a,b)=>a+b,0);
+            let aces = h.filter(x=>x===11).length;
+            while(t > 21 && aces > 0) { t -= 10; aces--; }
+            return t;
+        }
+
+        function flashTable(c) { const t=document.getElementById('table-surface'); t.classList.remove('correct-flash','incorrect-flash'); void t.offsetWidth; t.classList.add(c); }
+        
+        function setFeedback(l, m, c) {
+            document.getElementById('status-label').innerText = l;
+            document.getElementById('feedback-text').innerText = m;
+            document.getElementById('feedback-text').className = `text-4xl font-black italic transition-all ${c}`;
+        }
+
+        function updateUI() {
+            const cHTML = (v, h, active) => `<div class="card bg-${h?'slate-700':'white'} ${h?'':'text-black'} rounded-3xl flex items-center justify-center text-6xl font-black ${active ? 'neon-gold' : 'opacity-40'}">${h?'?':(v===11?'A':v)}</div>`;
+            document.getElementById('dealer-cards').innerHTML = game.dHand.map((c,i)=>cHTML(c, i===1 && game.turn==='P' && game.active, true)).join('');
+            document.getElementById('player-cards-container').innerHTML = game.hands.map((h,i)=>{
+                const active = (i===game.activeIdx && game.turn==='P');
+                return `<div class="flex flex-col items-center gap-6 ${active ? 'p-6 rounded-[2.5rem] bg-white/5 border-2 border-yellow-500':''}">
+                    <div class="flex gap-6">${h.map(c=>cHTML(c, false, active)).join('')}</div>
+                    <p class="text-xs font-black uppercase tracking-widest text-yellow-500/50">HAND ${i+1}</p>
+                </div>`;
+            }).join('');
+            document.getElementById('active-score').innerText = getScore(game.hands[game.activeIdx]);
+            document.getElementById('dealer-score').innerText = (game.turn==='P' && game.active) ? "?" : getScore(game.dHand);
+        }
+
+        function saveStat(ok, h, m) {
+            let s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
+            s.push({ t: Date.now(), ok, h, m });
+            localStorage.setItem('bj_stats_v9', JSON.stringify(s));
+        }
+
+        function downloadCSV() {
+            const s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
+            let csv = "Timestamp,Accuracy,Score,Action\n";
+            s.forEach(x => csv += `${new Date(x.t).toLocaleString()},${x.ok?'OK':'FAIL'},${x.h},${x.m}\n`);
+            const blob = new Blob([csv], {type:'text/csv'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href=url; a.download='blackjack_training.csv'; a.click();
+        }
+
+        function resetStats() { if(confirm("Reset all data?")) { localStorage.removeItem('bj_stats_v9'); location.reload(); } }
+
+        function showPage(id) { 
+            ['play','stats','chart'].forEach(p => document.getElementById(`page-${p}`).classList.add('hidden-section'));
+            document.getElementById(`page-${id}`).classList.remove('hidden-section'); 
+            if(id === 'stats') {
+                const s = JSON.parse(localStorage.getItem('bj_stats_v9')) || [];
+                document.getElementById('acc-today').innerText = s.length ? Math.round((s.filter(x=>x.ok).length/s.length)*100)+"%" : "0%";
+            }
+        }
+        window.onload = startNewGame;
+    </script>
 </body>
 </html>
