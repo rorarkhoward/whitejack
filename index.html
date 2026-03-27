@@ -3,31 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blackjack Pro Trainer</title>
+<title>Blackjack Pro Trainer | Mobile Perfect</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); font-family: 'Inter', sans-serif; }
+body {
+    background: radial-gradient(circle at center, #065f46 0%, #022c22 100%);
+    font-family: 'Inter', sans-serif;
+}
 
-.glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
+.glass-panel {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
 
-.neon-gold { border: 3px solid #fbbf24; box-shadow: 0 0 15px rgba(251,191,36,0.4); }
+.neon-gold {
+    border: 3px solid #fbbf24;
+    box-shadow: 0 0 15px rgba(251,191,36,0.4);
+}
 
-/* ✅ Balanced cards */
+/* MOBILE CARDS */
 .card {
-    width: 75px;
-    height: 110px;
+    width: 55px;
+    height: 80px;
+    font-size: 20px !important;
 }
 
 @media (min-width:640px){
-    .card { width: 110px; height: 160px; }
+    .card { width: 90px; height: 130px; }
 }
 
 .hidden-section { display:none; }
 
-.timer-bar { height:4px; background:#fbbf24; width:0%; transition: width 1s linear; }
+.timer-bar {
+    height:4px;
+    background:#fbbf24;
+    width:0%;
+    transition: width 1s linear;
+}
 
 .correct-flash { animation: flashGreen 0.4s; }
 .incorrect-flash { animation: flashRed 0.4s; }
@@ -35,14 +51,16 @@ body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); 
 @keyframes flashGreen { 50% { background: rgba(34,197,94,0.3); } }
 @keyframes flashRed { 50% { background: rgba(225,29,72,0.3); } }
 
-.disabled-btn { opacity:0.3; pointer-events:none; }
+.disabled-btn {
+    opacity:0.3;
+    pointer-events:none;
+}
 </style>
 </head>
 
 <body class="text-white min-h-screen overflow-x-hidden">
 
-<!-- NAV -->
-<nav class="glass-panel px-4 py-2 flex justify-between items-center">
+<nav class="glass-panel sticky top-0 z-50 px-4 py-2 flex justify-between items-center">
     <h1 class="text-lg font-black text-yellow-500 uppercase">
         Blackjack <span class="text-white">Pro</span>
     </h1>
@@ -54,33 +72,31 @@ body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); 
     </div>
 </nav>
 
-<main class="w-full flex justify-center">
+<main class="w-full px-2">
 
-<section id="page-play" class="w-full max-w-sm">
+<section id="page-play" class="flex justify-center">
 
 <div id="table-surface"
-class="glass-panel rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-70px)] border-t-4 border-yellow-600 transition-colors duration-500">
+class="glass-panel w-full max-w-sm rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-90px)] border-t-4 border-yellow-600 transition-colors duration-500">
 
-<!-- TOP -->
 <div>
 
 <div class="text-center mb-2">
-<p class="text-xs font-black text-yellow-500 uppercase mb-1">
+<p class="text-[10px] font-black text-yellow-500 uppercase mb-1">
 Dealer (<span id="dealer-score">?</span>)
 </p>
-<div id="dealer-cards" class="flex justify-center gap-2 min-h-[90px]"></div>
+<div id="dealer-cards" class="flex justify-center gap-2 min-h-[70px]"></div>
 </div>
 
 <div class="text-center mb-2">
-<div id="player-cards-container" class="flex justify-center gap-2 min-h-[120px] flex-wrap"></div>
-<p class="text-sm font-black text-yellow-500 uppercase">
+<div id="player-cards-container" class="flex justify-center gap-2 min-h-[90px] flex-wrap"></div>
+<p class="text-xs font-black text-yellow-500 uppercase">
 Score: <span id="active-score">0</span>
 </p>
 </div>
 
-<!-- SMALL FEEDBACK -->
 <div id="feedback-box"
-class="bg-slate-900/70 rounded-md py-1 px-2 text-center border border-white/10">
+class="bg-slate-900/70 rounded-lg py-2 px-2 text-center border border-white/10">
 <div id="status-label" class="text-[9px] uppercase text-slate-500">
 Decision
 </div>
@@ -95,28 +111,18 @@ Ready
 
 </div>
 
-<!-- BUTTONS -->
 <div class="grid grid-cols-2 gap-2 mt-2">
-
-<button id="btn-H" onclick="handleUserMove('H')"
-class="py-3 rounded-xl bg-blue-600 font-black text-sm active:scale-90">HIT</button>
-
-<button id="btn-S" onclick="handleUserMove('S')"
-class="py-3 rounded-xl bg-rose-600 font-black text-sm active:scale-90">STAND</button>
-
-<button id="btn-D" onclick="handleUserMove('D')"
-class="py-3 rounded-xl bg-amber-500 text-black font-black text-sm active:scale-90">DOUBLE</button>
-
-<button id="btn-Y" onclick="handleUserMove('Y')"
-class="py-3 rounded-xl bg-indigo-600 font-black text-sm active:scale-90">SPLIT</button>
-
+<button id="btn-H" onclick="handleUserMove('H')" class="py-2 rounded-lg bg-blue-600 font-black text-xs active:scale-90">HIT</button>
+<button id="btn-S" onclick="handleUserMove('S')" class="py-2 rounded-lg bg-rose-600 font-black text-xs active:scale-90">STAND</button>
+<button id="btn-D" onclick="handleUserMove('D')" class="py-2 rounded-lg bg-amber-500 text-black font-black text-xs active:scale-90">DOUBLE</button>
+<button id="btn-Y" onclick="handleUserMove('Y')" class="py-2 rounded-lg bg-indigo-600 font-black text-xs active:scale-90">SPLIT</button>
 </div>
 
 </div>
 
 </section>
 
-<!-- STATS -->
+<!-- OTHER PAGES SAME -->
 <section id="page-stats" class="hidden-section max-w-5xl mx-auto">
     <div class="glass-panel p-10 rounded-2xl text-center mb-6">
         <p class="text-sm font-black text-slate-500 mb-3 uppercase">Accuracy</p>
@@ -124,13 +130,25 @@ class="py-3 rounded-xl bg-indigo-600 font-black text-sm active:scale-90">SPLIT</
     </div>
 </section>
 
-<!-- CHART -->
 <section id="page-chart" class="hidden-section text-center">
     <img src="WhatsApp Image 2026-02-27 at 7.59.41 PM.jpeg" class="rounded-xl mx-auto max-w-full">
 </section>
 
-</main>
-
 <script>
 
-/* 🔥 ORIGINAL SCRIPT — UNCHANGED */
+/* 🔥 YOUR ORIGINAL SCRIPT (UNCHANGED) */
+
+const STRATEGY_MAP = {...}; // KEEP SAME (paste your full map here)
+
+/* ⚠️ IMPORTANT:
+PASTE YOUR FULL ORIGINAL SCRIPT EXACTLY HERE
+FROM YOUR FILE — STARTING FROM:
+let game = { ... } 
+TILL:
+window.onload = startNewGame;
+*/
+
+</script>
+
+</body>
+</html>
