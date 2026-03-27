@@ -9,38 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-body {
-    background: radial-gradient(circle at center, #065f46 0%, #022c22 100%);
-    font-family: 'Inter', sans-serif;
-}
+body { background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); font-family: 'Inter', sans-serif; }
 
-.glass-panel {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.1);
-}
+.glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
 
-.neon-gold {
-    border: 3px solid #fbbf24;
-    box-shadow: 0 0 15px rgba(251,191,36,0.4);
-}
+.neon-gold { border: 3px solid #fbbf24; box-shadow: 0 0 15px rgba(251,191,36,0.4); }
 
-/* 🔥 PERFECT BALANCE */
+/* ✅ Balanced cards */
 .card {
-    width: 70px;
-    height: 100px;
+    width: 75px;
+    height: 110px;
 }
 
 @media (min-width:640px){
-    .card { width: 100px; height: 140px; }
-}
-
-.timer-bar {
-    height:4px;
-    background:#fbbf24;
+    .card { width: 110px; height: 160px; }
 }
 
 .hidden-section { display:none; }
+
+.timer-bar { height:4px; background:#fbbf24; width:0%; transition: width 1s linear; }
 
 .correct-flash { animation: flashGreen 0.4s; }
 .incorrect-flash { animation: flashRed 0.4s; }
@@ -48,10 +35,7 @@ body {
 @keyframes flashGreen { 50% { background: rgba(34,197,94,0.3); } }
 @keyframes flashRed { 50% { background: rgba(225,29,72,0.3); } }
 
-.disabled-btn {
-    opacity:0.3;
-    pointer-events:none;
-}
+.disabled-btn { opacity:0.3; pointer-events:none; }
 </style>
 </head>
 
@@ -64,33 +48,31 @@ body {
     </h1>
 
     <div class="flex gap-3 text-xs font-bold uppercase text-slate-400">
-        <button onclick="showPage('play')">Play</button>
-        <button onclick="showPage('stats')">Stats</button>
+        <button onclick="showPage('play')">Training</button>
+        <button onclick="showPage('stats')">Insights</button>
+        <button onclick="showPage('chart')">Chart</button>
     </div>
 </nav>
 
 <main class="w-full flex justify-center">
 
-<!-- GAME -->
 <section id="page-play" class="w-full max-w-sm">
 
 <div id="table-surface"
-class="glass-panel rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-70px)] border-t-4 border-yellow-600">
+class="glass-panel rounded-2xl p-3 flex flex-col justify-between h-[calc(100vh-70px)] border-t-4 border-yellow-600 transition-colors duration-500">
 
 <!-- TOP -->
 <div>
 
-<!-- DEALER -->
 <div class="text-center mb-2">
 <p class="text-xs font-black text-yellow-500 uppercase mb-1">
 Dealer (<span id="dealer-score">?</span>)
 </p>
-<div id="dealer-cards" class="flex justify-center gap-2 min-h-[80px]"></div>
+<div id="dealer-cards" class="flex justify-center gap-2 min-h-[90px]"></div>
 </div>
 
-<!-- PLAYER -->
 <div class="text-center mb-2">
-<div id="player-cards-container" class="flex justify-center gap-2 min-h-[110px] flex-wrap"></div>
+<div id="player-cards-container" class="flex justify-center gap-2 min-h-[120px] flex-wrap"></div>
 <p class="text-sm font-black text-yellow-500 uppercase">
 Score: <span id="active-score">0</span>
 </p>
@@ -113,7 +95,7 @@ Ready
 
 </div>
 
-<!-- BIG BUTTONS -->
+<!-- BUTTONS -->
 <div class="grid grid-cols-2 gap-2 mt-2">
 
 <button id="btn-H" onclick="handleUserMove('H')"
@@ -134,8 +116,21 @@ class="py-3 rounded-xl bg-indigo-600 font-black text-sm active:scale-90">SPLIT</
 
 </section>
 
+<!-- STATS -->
+<section id="page-stats" class="hidden-section max-w-5xl mx-auto">
+    <div class="glass-panel p-10 rounded-2xl text-center mb-6">
+        <p class="text-sm font-black text-slate-500 mb-3 uppercase">Accuracy</p>
+        <p id="acc-today" class="text-5xl font-black text-green-400">0%</p>
+    </div>
+</section>
+
+<!-- CHART -->
+<section id="page-chart" class="hidden-section text-center">
+    <img src="WhatsApp Image 2026-02-27 at 7.59.41 PM.jpeg" class="rounded-xl mx-auto max-w-full">
+</section>
+
 </main>
 
 <script>
 
-/* ✅ ORIGINAL LOGIC (UNCHANGED) */
+/* 🔥 ORIGINAL SCRIPT — UNCHANGED */
