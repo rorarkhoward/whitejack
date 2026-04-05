@@ -34,6 +34,7 @@ async function sendDataToSheet(summary) {
     await fetch(scriptURL, {
         method: 'POST',
         mode: 'no-cors',
+        <script src="stats.js"></script>
         body: JSON.stringify(summary)
     });
 }
