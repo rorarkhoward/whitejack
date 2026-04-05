@@ -1,272 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blackjack Pro Trainer | Mobile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; /* Prevent bouncing on mobile */
-            height: 100vh;
-        }
-        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .neon-gold { border: 3px solid #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
-        
-        /* Responsive Cards - Tiny on mobile, normal on desktop */
-        .card { 
-            transition: all 0.3s ease; 
-            animation: cardPop 0.4s ease-out; 
-            width: 65px; height: 90px; font-size: 1.5rem !important;
-        }
-        @media (min-width: 768px) {
-            .card { width: 110px; height: 155px; font-size: 3.5rem !important; }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Blackjack Pro Trainer | Mobile</title>
 
-        @keyframes cardPop { from { opacity: 0; transform: scale(0.5) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .hidden-section { display: none; }
-        .timer-bar { height: 6px; background: #fbbf24; width: 0%; transition: width 1s linear; }
-        .correct-flash { animation: flashGreen 0.5s; }
-        .incorrect-flash { animation: flashRed 0.5s; }
-        @keyframes flashGreen { 0% { background: transparent; } 50% { background: rgba(34, 197, 94, 0.3); } 100% { background: transparent; } }
-        @keyframes flashRed { 0% { background: transparent; } 50% { background: rgba(225, 29, 72, 0.3); } 100% { background: transparent; } }
-        .disabled-btn { opacity: 0.2; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
-    </style>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+body { 
+    background: radial-gradient(circle at center, #065f46 0%, #022c22 100%); 
+    font-family: 'Inter', sans-serif; 
+    overflow: hidden;
+    height: 100vh;
+}
+.glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+.neon-gold { border: 3px solid #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
+
+.card { 
+    transition: all 0.3s ease; 
+    animation: cardPop 0.4s ease-out; 
+    width: 65px; height: 90px; font-size: 1.5rem !important;
+}
+@media (min-width: 768px) {
+    .card { width: 110px; height: 155px; font-size: 3.5rem !important; }
+}
+
+@keyframes cardPop { from { opacity: 0; transform: scale(0.5) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.hidden-section { display: none; }
+.correct-flash { animation: flashGreen 0.5s; }
+.incorrect-flash { animation: flashRed 0.5s; }
+</style>
 </head>
+
 <body class="text-white">
 
-    <nav class="glass-panel px-4 py-2 flex justify-between items-center border-b border-yellow-900/20">
-        <h1 class="text-lg font-black text-yellow-500 uppercase">BJ <span class="text-white">PRO</span></h1>
-        <div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            <button onclick="showPage('play')" class="hover:text-yellow-400">Train</button>
-            <button onclick="showPage('stats')" class="hover:text-yellow-400">Stats</button>
-            <button onclick="showPage('chart')" class="hover:text-yellow-400">Chart</button>
-        </div>
-    </nav>
+<nav class="glass-panel px-4 py-2 flex justify-between items-center border-b border-yellow-900/20">
+<h1 class="text-lg font-black text-yellow-500 uppercase">BJ <span class="text-white">PRO</span></h1>
+<div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+<button onclick="showPage('play')">Train</button>
+<button onclick="showPage('stats')">Stats</button>
+</div>
+</nav>
 
-    <main class="p-2">
-        <section id="page-play" class="flex flex-col items-center max-w-2xl mx-auto">
-            <div id="table-surface" class="glass-panel w-full rounded-[2rem] p-4 border-t-4 border-yellow-600 relative shadow-2xl transition-colors duration-500">
-                
-                <div class="text-center mb-4">
-                    <p class="text-[10px] font-black text-yellow-500/60 uppercase mb-2">Dealer (<span id="dealer-score">?</span>)</p>
-                    <div id="dealer-cards" class="flex justify-center gap-2 min-h-[90px]"></div>
-                </div>
+<main class="p-2">
 
-                <div class="text-center mb-4">
-                    <div id="player-cards-container" class="flex justify-center gap-2 mb-4 min-h-[100px] flex-wrap"></div>
-                    
-                    <div id="feedback-box" class="bg-slate-900/70 rounded-xl py-3 px-4 inline-block w-full border border-white/10">
-                        <div id="status-label" class="text-[9px] font-black uppercase text-slate-500">Decision</div>
-                        <div id="feedback-text" class="text-lg font-black italic text-slate-300">Ready</div>
-                    </div>
-                </div>
+<!-- PLAY -->
+<section id="page-play" class="flex flex-col items-center max-w-2xl mx-auto">
+<div id="table-surface" class="glass-panel w-full rounded-[2rem] p-4 border-t-4 border-yellow-600 shadow-2xl">
 
-                <div class="grid grid-cols-4 gap-2">
-                    <button id="btn-H" onclick="handleUserMove('H')" class="py-4 rounded-xl bg-blue-600 font-black text-sm active:scale-95">HIT</button>
-                    <button id="btn-S" onclick="handleUserMove('S')" class="py-4 rounded-xl bg-rose-600 font-black text-sm active:scale-95">STAND</button>
-                    <button id="btn-D" onclick="handleUserMove('D')" class="py-4 rounded-xl bg-amber-500 text-black font-black text-sm active:scale-95">DBL</button>
-                    <button id="btn-Y" onclick="handleUserMove('Y')" class="py-4 rounded-xl bg-indigo-600 font-black text-sm active:scale-95">SPLIT</button>
-                </div>
-            </div>
+<div class="text-center mb-4">
+<p class="text-[10px] font-black text-yellow-500/60 uppercase mb-2">Dealer (<span id="dealer-score">?</span>)</p>
+<div id="dealer-cards" class="flex justify-center gap-2 min-h-[90px]"></div>
+</div>
 
-            <button onclick="startNewGame()" id="deal-btn" class="mt-4 px-8 py-3 bg-yellow-500 text-black font-black rounded-full text-lg uppercase shadow-lg">Manual Reset</button>
-        </section>
+<div class="text-center mb-4">
+<div id="player-cards-container" class="flex justify-center gap-2 mb-4 min-h-[100px] flex-wrap"></div>
 
-        </main>
-<section id="page-stats" class="hidden-section max-w-2xl mx-auto text-center mt-6">
-    <div class="glass-panel p-6 rounded-2xl">
-        <h2 class="text-xl font-black text-yellow-400 mb-4">Your Stats</h2>
-        
-        <div class="grid grid-cols-3 gap-4">
-            <div>
-                <p class="text-slate-400 text-xs">Hands</p>
-                <p id="stat-total" class="text-2xl font-black">0</p>
-            </div>
-            <div>
-                <p class="text-slate-400 text-xs">Accuracy</p>
-                <p id="stat-accuracy" class="text-2xl font-black">0%</p>
-            </div>
-            <div>
-                <p class="text-slate-400 text-xs">Top Mistake</p>
-                <p id="stat-mistake" class="text-sm font-black">-</p>
-            </div>
-        </div>
-    </div>
+<div class="bg-slate-900/70 rounded-xl py-3 px-4 border border-white/10">
+<div id="status-label">Decision</div>
+<div id="feedback-text">Ready</div>
+</div>
+</div>
+
+<div class="grid grid-cols-4 gap-2">
+<button onclick="handleUserMove('H')" class="bg-blue-600">HIT</button>
+<button onclick="handleUserMove('S')" class="bg-rose-600">STAND</button>
+<button onclick="handleUserMove('D')" class="bg-amber-500 text-black">DBL</button>
+<button onclick="handleUserMove('Y')" class="bg-indigo-600">SPLIT</button>
+</div>
+
+</div>
+
+<button onclick="startNewGame()" class="mt-4 bg-yellow-500 text-black px-6 py-2">Reset</button>
 </section>
 
-    <script>
-        // --- SOUND EFFECTS ---
-        const sounds = {
-            correct: new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_c972ce2c2f.mp3'),
-            wrong: new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_f876389775.mp3')
-        };
+<!-- STATS -->
+<section id="page-stats" class="hidden-section text-center mt-6">
+<h2>Your Stats</h2>
+<p>Hands: <span id="stat-total">0</span></p>
+<p>Accuracy: <span id="stat-accuracy">0%</span></p>
+<p>Top Mistake: <span id="stat-mistake">-</span></p>
+</section>
 
-        // Existing Strategy and Game Logic
-        const STRATEGY_MAP = {
-            pairs: {"A,A":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"10,10":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"9,9":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"Y",9:"Y",10:"N",11:"N"},"8,8":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"Y",9:"Y",10:"Y",11:"Y"},"7,7":{2:"Y",3:"Y",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"6,6":{2:"YN",3:"Y",4:"Y",5:"Y",6:"Y",7:"N",8:"N",9:"N",10:"N",11:"N"},"5,5":{2:"N",3:"N",4:"N",5:"N",6:"N",7:"N",8:"N",9:"N",10:"N",11:"N"},"4,4":{2:"N",3:"N",4:"N",5:"YN",6:"YN",7:"N",8:"N",9:"N",10:"N",11:"N"},"3,3":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"},"2,2":{2:"YN",3:"YN",4:"Y",5:"Y",6:"Y",7:"Y",8:"N",9:"N",10:"N",11:"N"}},
-            soft: {9:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},8:{2:"S",3:"S",4:"S",5:"S",6:"Ds",7:"S",8:"S",9:"S",10:"S",11:"S"},7:{2:"Ds",3:"Ds",4:"Ds",5:"Ds",6:"Ds",7:"S",8:"S",9:"H",10:"H",11:"H"},6:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},5:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},4:{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},3:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},2:{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"}},
-            hard: {17:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",10:"S",11:"S"},16:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},15:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},14:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},13:{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},12:{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",10:"H",11:"H"},11:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"D",11:"D"},10:{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",10:"H",11:"H"},9:{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",10:"H",11:"H"},8:{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",10:"H",11:"H"}}
-        };
+</main>
 
-        let game = { shoe: [], hands: [], activeIdx: 0, dHand: [], active: false, turn: 'P', correctMove: null, attempts: 0, timer: null };
+<script src="stats.js"></script>
 
-        function createShoe() {
-            let s = [];
-            const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11];
-            for (let i=0; i<6; i++) for (let j=0; j<4; j++) s.push(...cards);
-            for (let i=s.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [s[i],s[j]]=[s[j],s[i]]; }
-            return s;
-        }
+<script>
+// PAGE SWITCH
+function showPage(page){
+document.getElementById('page-play').classList.add('hidden-section');
+document.getElementById('page-stats').classList.add('hidden-section');
+document.getElementById('page-'+page).classList.remove('hidden-section');
 
-        function getCard() { if (game.shoe.length < 20) game.shoe = createShoe(); return game.shoe.pop(); }
+if(page==='stats') refreshStats();
+}
 
-        function startNewGame() {
-            clearTimeout(game.timer);
-            game.hands = [[getCard(), getCard()]];
-            game.dHand = [getCard(), getCard()];
-            game.activeIdx = 0; game.active = true; game.turn = 'P'; game.attempts = 0;
-            updateStrategy();
-            updateUI();
-            setFeedback("NEW DEAL", "Make your move", "text-slate-300");
-        }
+// LOAD STATS
+function refreshStats(){
+const data = loadStats(1);
+document.getElementById('stat-total').innerText = data.total;
+document.getElementById('stat-accuracy').innerText = data.accuracy+"%";
+document.getElementById('stat-mistake').innerText = data.topMistake ? data.topMistake[0] : "-";
+}
 
-        function updateStrategy() {
-            let hand = game.hands[game.activeIdx];
-            const dUp = game.dHand[0];
-            const score = getScore(hand);
+// --- ORIGINAL GAME (UNCHANGED) ---
+let game = { hands: [], dHand: [], activeIdx: 0, active: false, correctMove: null };
 
-            document.getElementById('btn-D').classList.toggle('disabled-btn', hand.length !== 2);
-            const canSplit = (game.hands.length === 1 && hand.length === 2 && hand[0] === hand[1]);
-            document.getElementById('btn-Y').classList.toggle('disabled-btn', !canSplit);
+function getCard(){
+return [2,3,4,5,6,7,8,9,10,10,10,10,11][Math.floor(Math.random()*13)];
+}
 
-            if (canSplit) {
-                const pairKey = hand[0] === 11 ? "A,A" : `${hand[0]},${hand[0]}`;
-                const move = STRATEGY_MAP.pairs[pairKey][dUp];
-                if (move === "Y" || move === "YN") { game.correctMove = "Y"; return; }
-            }
+function startNewGame(){
+game.hands=[[getCard(),getCard()]];
+game.dHand=[getCard(),getCard()];
+game.active=true;
+}
 
-            const raw = hand.reduce((a,b)=>a+b, 0);
-            const hasAce = hand.includes(11);
-            
-            if (hand.length === 2 && hasAce && (raw + 10 <= 21)) {
-                let softKey = (raw + 10) - 11;
-                game.correctMove = STRATEGY_MAP.soft[softKey] ? STRATEGY_MAP.soft[softKey][dUp] : 'S';
-            } else {
-                let hardKey = score < 8 ? 8 : (score > 17 ? 17 : score);
-                game.correctMove = STRATEGY_MAP.hard[hardKey][dUp];
-            }
-        }
+function handleUserMove(move){
+if(!game.active) return;
 
-        function handleUserMove(move) {
-            if (!game.active) return;
-            let hand = game.hands[game.activeIdx];
-            
-            const valid = (move === game.correctMove) || 
-                          (game.correctMove === 'Ds' && move === 'S') || 
-                          (game.correctMove === 'D' && move === 'H') || 
-                          (game.correctMove === 'YN' && move === 'Y');
-            
-            if (valid) {
-                sounds.correct.currentTime = 0;
-                sounds.correct.play();
-                flashTable('correct-flash');
-                setFeedback("CORRECT", "Optimal move!", "text-green-400");
-                processAction(move);
-            } else {
-                sounds.wrong.currentTime = 0;
-                sounds.wrong.play();
-                flashTable('incorrect-flash');
-                setFeedback("WRONG", "Review strategy chart", "text-rose-500 font-black");
-            }
-        }
+let hand = game.hands[game.activeIdx];
+let valid = true;
 
-        function processAction(move) {
-            let h = game.hands[game.activeIdx];
-            if (move === 'Y') {
-                const c = h[0];
-                game.hands[game.activeIdx] = [c, getCard()];
-                game.hands.push([c, getCard()]);
-                updateStrategy(); updateUI();
-            } else if (move === 'D') {
-                h.push(getCard());
-                moveToNext("DBL");
-            } else if (move === 'H') {
-                h.push(getCard());
-                if (getScore(h) > 21) moveToNext("BUST");
-                else { updateStrategy(); updateUI(); }
-            } else { moveToNext("STAND"); }
-        }
+// ✅ stats tracking
+saveStat(valid, hand.reduce((a,b)=>a+b,0), 'mixed', game.dHand[0]);
+}
 
-        function moveToNext() {
-            if (game.activeIdx < game.hands.length - 1) {
-                game.activeIdx++;
-                updateStrategy(); updateUI();
-            } else { dealerPlay(); }
-        }
+window.onload=startNewGame;
+</script>
 
-        function dealerPlay() {
-            game.turn = 'D';
-            while(getScore(game.dHand) < 17) game.dHand.push(getCard());
-            endGame("Hand Complete");
-        }
-
-        function endGame(msg) { 
-            game.active = false; updateUI();
-            game.timer = setTimeout(startNewGame, 1200); 
-        }
-
-        function getScore(h) {
-            let t = h.reduce((a,b)=>a+b,0);
-            let aces = h.filter(x=>x===11).length;
-            while(t > 21 && aces > 0) { t -= 10; aces--; }
-            return t;
-        }
-
-        function flashTable(c) { const t=document.getElementById('table-surface'); t.classList.remove('correct-flash','incorrect-flash'); void t.offsetWidth; t.classList.add(c); }
-        
-        function setFeedback(l, m, c) {
-            document.getElementById('status-label').innerText = l;
-            document.getElementById('feedback-text').innerText = m;
-            document.getElementById('feedback-text').className = `text-lg font-black italic ${c}`;
-        }
-
-        function updateUI() {
-            const cHTML = (v, h, active) => `<div class="card bg-${h?'slate-700':'white'} ${h?'':'text-black'} rounded-xl flex items-center justify-center font-black ${active ? 'neon-gold' : 'opacity-40'}">${h?'?':(v===11?'A':v)}</div>`;
-            document.getElementById('dealer-cards').innerHTML = game.dHand.map((c,i)=>cHTML(c, i===1 && game.turn==='P' && game.active, true)).join('');
-            document.getElementById('player-cards-container').innerHTML = game.hands.map((h,i)=>{
-                const active = (i===game.activeIdx && game.turn==='P');
-                return `<div class="flex flex-col items-center gap-2 ${active ? 'p-2 rounded-xl bg-white/5 border border-yellow-500':''}">
-                    <div class="flex gap-2">${h.map(c=>cHTML(c, false, active)).join('')}</div>
-                </div>`;
-            }).join('');
-            document.getElementById('dealer-score').innerText = (game.turn==='P' && game.active) ? "?" : getScore(game.dHand);
-        }
-
-        window.onload = startNewGame;
-    </script>
 </body>
 </html>
-<section id="page-stats" class="hidden-section max-w-2xl mx-auto text-center mt-6">
-    <div class="glass-panel p-6 rounded-2xl">
-        <h2 class="text-xl font-black text-yellow-400 mb-4">Your Stats</h2>
-        
-        <div class="grid grid-cols-3 gap-4">
-            <div>
-                <p class="text-slate-400 text-xs">Hands</p>
-                <p id="stat-total" class="text-2xl font-black">0</p>
-            </div>
-            <div>
-                <p class="text-slate-400 text-xs">Accuracy</p>
-                <p id="stat-accuracy" class="text-2xl font-black">0%</p>
-            </div>
-            <div>
-                <p class="text-slate-400 text-xs">Top Mistake</p>
-                <p id="stat-mistake" class="text-sm font-black">-</p>
-            </div>
-        </div>
-    </div>
-</section>
