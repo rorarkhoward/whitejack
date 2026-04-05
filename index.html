@@ -230,3 +230,40 @@
     </script>
 </body>
 </html>
+<section id="page-stats" class="hidden-section max-w-2xl mx-auto text-center mt-6">
+    <div class="glass-panel p-6 rounded-2xl">
+        <h2 class="text-xl font-black text-yellow-400 mb-4">Your Stats</h2>
+        
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <p class="text-slate-400 text-xs">Hands</p>
+                <p id="stat-total" class="text-2xl font-black">0</p>
+            </div>
+            <div>
+                <p class="text-slate-400 text-xs">Accuracy</p>
+                <p id="stat-accuracy" class="text-2xl font-black">0%</p>
+            </div>
+            <div>
+                <p class="text-slate-400 text-xs">Top Mistake</p>
+                <p id="stat-mistake" class="text-sm font-black">-</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+function showPage(page) {
+    document.getElementById('page-play').classList.add('hidden-section');
+    document.getElementById('page-stats').classList.add('hidden-section');
+
+    document.getElementById(`page-${page}`).classList.remove('hidden-section');
+
+    if (page === 'stats') refreshStats();
+}
+
+function refreshStats() {
+    const data = loadStats(1);
+
+    document.getElementById('stat-total').innerText = data.total;
+    document.getElementById('stat-accuracy').innerText = data.accuracy + "%";
+    document.getElementById('stat-mistake').innerText = data.topMistake ? data.topMistake[0] : "-";
+}
